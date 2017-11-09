@@ -1,0 +1,22 @@
+{
+    "type": "object",
+    "properties": {
+        "jsonrpc": {
+            "const": "2.0"
+        },
+        "method": {
+            "const": "getConfiguration"
+        },
+        "id": {
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        }
+    },
+    "required": ["jsonrpc", "method", "id"]
+}

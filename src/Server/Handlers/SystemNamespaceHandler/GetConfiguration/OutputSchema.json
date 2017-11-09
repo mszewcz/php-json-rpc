@@ -1,0 +1,93 @@
+{
+    "type": "object",
+    "properties": {
+        "jsonrpc": {
+            "const": "2.0"
+        },
+        "id": {
+            "oneOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "result": {
+            "type": "object",
+            "properties": {
+                "serverConfiguration": {
+                    "$ref": "#/definitions/serverConfiguration"
+                },
+                "serverTimestamp": {
+                    "type": "integer"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "serverConfiguration",
+                "serverTimestamp"
+            ]
+        },
+        "required": [
+            "jsonrpc",
+            "id",
+            "result"
+        ]
+    },
+    "definitions": {
+        "serverConfiguration": {
+            "type": "object",
+            "properties": {
+                "services": {
+                    "$ref": "#/definitions/services"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "services"
+            ]
+        },
+        "services": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-z](?i:[a-z0-9]+)$": {
+                    "$ref": "#/definitions/service"
+                }
+            },
+            "additionalProperties": false
+        },
+        "service": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-z](?i:[a-z0-9]+)$": {
+                    "$ref": "#/definitions/method"
+                }
+            },
+            "additionalProperties": false
+        },
+        "method": {
+            "type": "object",
+            "properties": {
+                "inputSchema": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "outputSchema": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "additionalProperties": false,
+            "required": "url"
+        }
+    }
+}
