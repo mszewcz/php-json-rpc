@@ -68,8 +68,8 @@ class SchemaMapTest extends TestCase
         $this->assertEquals($expected, $this->schemaMap->getUrls('system', 'subtract'));
 
         $expected = [
-            'input'  => 'http://foo.bar/schemas/system/getConfiguration/input-schema.json',
-            'output' => 'http://foo.bar/schemas/system/getConfiguration/output-schema.json',
+            'input'  => 'http://foo.bar/schemas/system/getConfiguration/inputSchema.json',
+            'output' => 'http://foo.bar/schemas/system/getConfiguration/outputSchema.json',
         ];
         $this->assertEquals($expected, $this->schemaMap->getUrls('system', 'getConfiguration'));
     }

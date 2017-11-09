@@ -19,8 +19,6 @@ use MS\Json\Rpc\Server\Exceptions\ServerErrorException;
 use MS\Json\Rpc\Server\Response;
 use MS\Json\Rpc\Shared\Headers;
 use MS\Json\SchemaValidator\Validator;
-use MS\Json\Utils\Exceptions\DecodingException;
-use MS\Json\Utils\Exceptions\EncodingException;
 use MS\Json\Utils\Utils;
 
 final class Server
@@ -90,7 +88,7 @@ final class Server
     {
         try {
             return $this->utils->encode($data);
-        } catch (EncodingException $e) {
+        } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), -32002);
         }
     }
@@ -197,7 +195,7 @@ final class Server
     {
         try {
             $decoded = $this->utils->decode($this->request);
-        } catch (DecodingException $exception) {
+        } catch (\Exception $exception) {
             throw new ParseErrorException();
         }
         if (\is_array($decoded) && \count($decoded) == 0) {

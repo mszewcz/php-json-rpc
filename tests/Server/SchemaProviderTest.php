@@ -65,11 +65,8 @@ class SchemaProviderTest extends TestCase
             'properties' => [
                 'jsonrpc' => ['const' => '2.0'],
                 'method'  => ['const' => 'getConfiguration'],
-                'id'  => [
-                    'oneOf' => [
-                        ['type'=>'integer'],
-                        ['type'=>'string']
-                    ]
+                'id'      => [
+                    'oneOf' => [['type' => 'integer'], ['type' => 'string']],
                 ],
             ],
             'required'   => ['jsonrpc', 'method', 'id'],
@@ -90,7 +87,8 @@ class SchemaProviderTest extends TestCase
         $expected .= '"method": {"type": "object","properties": {"inputSchema": {"type": "string","format": "uri"';
         $expected .= '},"outputSchema": {"type": "string","format": "uri"},"url": {"type": "string","format": "uri"';
         $expected .= '}},"additionalProperties": false,"required": "url"}}}';
-        $this->assertEquals(\json_decode($expected, true), $this->schemaProvider->getSchema('system', 'getConfiguration', 'output'));
+        $expected = \json_decode($expected, true);
+        $this->assertEquals($expected, $this->schemaProvider->getSchema('system', 'getConfiguration', 'output'));
     }
 
     /**
@@ -105,20 +103,22 @@ class SchemaProviderTest extends TestCase
                 'method'  => ['type' => 'string'],
                 'params'  => [
                     'oneOf' => [
-                        ['$ref' => '#/definitions/paramsAsArray'], ['$ref' => '#/definitions/paramsAsObject']
+                        ['$ref' => '#/definitions/paramsAsArray'],
+                        ['$ref' => '#/definitions/paramsAsObject'],
                     ],
                 ],
                 'id'      => [
-                    'oneOf' => [
-                        ['type' => 'integer'], ['type' => 'string']
-                    ],
+                    'oneOf' => [['type' => 'integer'], ['type' => 'string'],],
                 ],
             ],
             'required'    => ['jsonrpc', 'method'],
             'definitions' => [
                 'paramsAsArray'  => [
                     'type'            => 'array',
-                    'items'           => [['type' => 'integer'], ['type' => 'integer']],
+                    'items'           => [
+                        ['type' => 'integer'],
+                        ['type' => 'integer'],
+                    ],
                     'additionalItems' => false,
                 ],
                 'paramsAsObject' => [
@@ -165,12 +165,8 @@ class SchemaProviderTest extends TestCase
                         'error'   => [
                             'type'       => 'object',
                             'properties' => [
-                                'code'    => [
-                                    'type' => 'integer',
-                                ],
-                                'message' => [
-                                    'type' => 'string',
-                                ],
+                                'code'    => ['type' => 'integer'],
+                                'message' => ['type' => 'string'],
                             ],
                             'required'   => ['code', 'message'],
                         ],
@@ -191,17 +187,9 @@ class SchemaProviderTest extends TestCase
 
         $expected = [];
         $this->assertEquals($expected, $this->schemaProviderDefault->getSchema('system', 'sum', 'unknown'));
-
-        $expected = [];
         $this->assertEquals($expected, $this->schemaProviderDefault->getSchema('system', 'unknown', 'input'));
-
-        $expected = [];
         $this->assertEquals($expected, $this->schemaProviderDefault->getSchema('unknown', 'sum', 'input'));
-
-        $expected = [];
         $this->assertEquals($expected, $this->schemaProviderDefault->getSchema('system', 'unknown', 'output'));
-
-        $expected = [];
         $this->assertEquals($expected, $this->schemaProviderDefault->getSchema('unknown', 'sum', 'output'));
     }
 }

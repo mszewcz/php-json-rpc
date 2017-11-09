@@ -73,6 +73,7 @@ class InputParamsValidatorTest extends TestCase
     public function testValidateCheckType()
     {
         $curlHandler = \curl_init('http://foo.bar/');
+        $object = \json_decode('{"a":2, "b":4}');
         $request = ['jsonrpc' => '2.0', 'method' => 'subtract', 'params' => ['paramA' => 9.3], 'id' => 1];
         $this->assertFalse($this->validator->validate('system', 'testType', $request));
         $request = ['jsonrpc' => '2.0', 'method' => 'subtract', 'params' => ['paramA' => false], 'id' => 1];
@@ -83,7 +84,7 @@ class InputParamsValidatorTest extends TestCase
         $this->assertFalse($this->validator->validate('system', 'testType', $request));
         $request = ['jsonrpc' => '2.0', 'method' => 'subtract', 'params' => ['paramA' => [0, 2]], 'id' => 1];
         $this->assertFalse($this->validator->validate('system', 'testType', $request));
-        $request = ['jsonrpc' => '2.0', 'method' => 'subtract', 'params' => ['paramA' => \json_decode('{"a":2, "b":4}')], 'id' => 1];
+        $request = ['jsonrpc' => '2.0', 'method' => 'subtract', 'params' => ['paramA' => $object], 'id' => 1];
         $this->assertFalse($this->validator->validate('system', 'testType', $request));
         $request = ['jsonrpc' => '2.0', 'method' => 'subtract', 'params' => ['paramA' => $curlHandler], 'id' => 1];
         $this->assertFalse($this->validator->validate('system', 'testType', $request));

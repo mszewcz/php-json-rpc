@@ -177,22 +177,22 @@ class Configuration
      */
     public function getNamespaceHandler(): ?AbstractNamespaceHandler
     {
-        $currentNamespaceName = $this->getCurrentNamespaceName();
-        if (!\array_key_exists($currentNamespaceName, $this->namespaceMap)) {
+        $nsName = $this->getCurrentNamespaceName();
+        if (!\array_key_exists($nsName, $this->namespaceMap)) {
             $msg = \sprintf('Handler for namespace \'%s\' was not found', $this->currentNamespace);
             throw new ServerErrorException($msg, -32000);
         }
 
-        $namespaceHandlerClass = $this->namespaceMap[$currentNamespaceName];
-        $namespaceHandler = new $namespaceHandlerClass($this);
+        $nsHandlerClass = $this->namespaceMap[$nsName];
+        $nsHandler = new $nsHandlerClass($this);
 
-        if (!($namespaceHandler instanceof AbstractNamespaceHandler)) {
+        if (!($nsHandler instanceof AbstractNamespaceHandler)) {
             $msg = \sprintf(
                 '%s MUST be an instance of \MS\Json\Rpc\Server\Handlers\AbstractNamespaceHandler',
-                $namespaceHandlerClass
+                $nsHandlerClass
             );
             throw new ServerErrorException($msg, -32001);
         }
-        return $namespaceHandler;
+        return $nsHandler;
     }
 }

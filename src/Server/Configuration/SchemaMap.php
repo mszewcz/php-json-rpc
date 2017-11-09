@@ -59,8 +59,18 @@ class SchemaMap
 
                 $inputSchemaClass = $this->getInputSchemaClass($method);
                 $outputSchemaClass = $this->getOutputSchemaClass($method);
-                $inputSchemaUrl = \sprintf('%sschemas/%s/%s/input-schema.json', $this->serverUrl, $nsName, $methodName);
-                $outputSchemaUrl = \sprintf('%sschemas/%s/%s/output-schema.json', $this->serverUrl, $nsName, $methodName);
+                $inputSchemaUrl = \sprintf(
+                    '%sschemas/%s/%s/inputSchema.json',
+                    $this->serverUrl,
+                    $nsName,
+                    $methodName
+                );
+                $outputSchemaUrl = \sprintf(
+                    '%sschemas/%s/%s/outputSchema.json',
+                    $this->serverUrl,
+                    $nsName,
+                    $methodName
+                );
 
                 $this->schemaClasses[$nsName][$methodName] = [
                     'input'  => $inputSchemaClass,

@@ -75,6 +75,7 @@ class SystemNamespaceHandlerTest extends TestCase
      * @return SystemNamespaceHandler
      * @throws InvalidParamsException
      * @throws MethodNotFoundException
+     * @throws \MS\Json\Utils\Exceptions\DecodingException
      */
     public function testInvokeGetConfiguration(SystemNamespaceHandler $class): SystemNamespaceHandler
     {
@@ -91,8 +92,18 @@ class SystemNamespaceHandlerTest extends TestCase
                 'services' => [
                     'system' => [
                         'getConfiguration' => [
-                            'inputSchema'  => \sprintf('%s://%s%s/schemas/system/getConfiguration/input-schema.json', $protocol, $serverName, $scriptName),
-                            'outputSchema' => \sprintf('%s://%s%s/schemas/system/getConfiguration/output-schema.json', $protocol, $serverName, $scriptName),
+                            'inputSchema'  => \sprintf(
+                                '%s://%s%s/schemas/system/getConfiguration/inputSchema.json',
+                                $protocol,
+                                $serverName,
+                                $scriptName
+                            ),
+                            'outputSchema' => \sprintf(
+                                '%s://%s%s/schemas/system/getConfiguration/outputSchema.json',
+                                $protocol,
+                                $serverName,
+                                $scriptName
+                            ),
                             'url'          => \sprintf('%s://%s%s/system/', $protocol, $serverName, $scriptName),
                         ],
                     ],
@@ -110,6 +121,7 @@ class SystemNamespaceHandlerTest extends TestCase
      * @param SystemNamespaceHandler $class
      * @throws InvalidParamsException
      * @throws MethodNotFoundException
+     * @throws \MS\Json\Utils\Exceptions\DecodingException
      */
     public function testMethodNotFoundException(SystemNamespaceHandler $class)
     {
@@ -141,6 +153,7 @@ class SystemNamespaceHandlerTest extends TestCase
      * @return SecondNamespaceHandler
      * @throws InvalidParamsException
      * @throws MethodNotFoundException
+     * @throws \MS\Json\Utils\Exceptions\DecodingException
      */
     public function testParamsNumeric(): SecondNamespaceHandler
     {
@@ -161,6 +174,7 @@ class SystemNamespaceHandlerTest extends TestCase
      * @param SecondNamespaceHandler $class
      * @throws InvalidParamsException
      * @throws MethodNotFoundException
+     * @throws \MS\Json\Utils\Exceptions\DecodingException
      */
     public function testParamsUnsorted(SecondNamespaceHandler $class)
     {
@@ -169,7 +183,9 @@ class SystemNamespaceHandlerTest extends TestCase
         ];
         $this->config->setNamespaceMap($nsMap);
 
-        $request = ['jsonrpc' => '2.0', 'method' => 'subtract', 'params' => ['numberB' => 2, 'numberA' => 5], 'id' => 1];
+        $request = [
+            'jsonrpc' => '2.0', 'method' => 'subtract', 'params' => ['numberB' => 2, 'numberA' => 5], 'id' => 1
+        ];
         $this->assertEquals(3, $class->invoke('subtract', $request));
     }
 }

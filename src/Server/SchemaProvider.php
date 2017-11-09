@@ -189,8 +189,9 @@ class SchemaProvider
                             ],
                             'result'  => [
                                 'oneOf' => [
-                                    ['type' => 'boolean'], ['type' => 'number'], ['type' => 'integer'], ['type' => 'float'],
-                                    ['type' => 'string'], ['type' => 'array'], ['type' => 'object'], ['type' => 'null'],
+                                    ['type' => 'boolean'], ['type' => 'number'], ['type' => 'integer'],
+                                    ['type' => 'float'], ['type' => 'string'], ['type' => 'array'],
+                                    ['type' => 'object'], ['type' => 'null'],
                                 ],
                             ],
                             'id'      => [

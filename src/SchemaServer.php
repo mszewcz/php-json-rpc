@@ -12,6 +12,7 @@ namespace MS\Json\Rpc;
 
 
 use MS\Json\Rpc\Server\Configuration;
+use MS\Json\Rpc\Server\Exceptions\ServerErrorException;
 use MS\Json\Rpc\Server\SchemaProvider;
 use MS\Json\Rpc\Shared\Headers;
 use MS\Json\Utils\Exceptions\EncodingException;
@@ -95,7 +96,7 @@ final class SchemaServer
             $this->methodName = $pathInfo[1];
         }
         if (isset($pathInfo[2])) {
-            \preg_match('/^(input|output|unknown)-schema\.json$/', $pathInfo[2], $matches);
+            \preg_match('/^(input|output|unknown)Schema\.json$/', $pathInfo[2], $matches);
             if (isset($matches[1])) {
                 $this->schemaType = $matches[1];
             }
@@ -107,6 +108,7 @@ final class SchemaServer
      *
      * @param array $data
      * @return string
+     * @throws ServerErrorException
      */
     private function encode(array $data): string
     {
@@ -114,7 +116,7 @@ final class SchemaServer
             return count($data)===0 ? '{}' : $this->utils->encode($data);
             // @codeCoverageIgnoreStart
         } catch (EncodingException $e) {
-            die($e->getMessage());
+            throw new ServerErrorException($e->getMessage(), -32002);
             // @codeCoverageIgnoreEnd
         }
     }

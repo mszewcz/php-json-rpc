@@ -53,10 +53,10 @@ Contributions are welcome. Please send your contributions through GitHub pull re
 
 Pull requests for bug fixes must be based on latest stable release from the ```master``` branch whereas pull requests for new features must be based on the ```developer``` branch.
 
-Due to time constraints, we are not always able to respond as quickly as we would like. If you feel you're waiting too long for merging your pull request please remind us here.
+Due to time constraints, I am not always able to respond as quickly as I would like. If you feel you're waiting too long for merging your pull request please remind me here.
 
 #### Coding standards
-We follow [PSR-2][psr2] coding style and [PSR-4][psr4] autoloading standards. Be sure you're also following them before sending us your pull request.
+I follow [PSR-2][psr2] coding style and [PSR-4][psr4] autoloading standards. Be sure you're also following them before sending us your pull request.
 
 
 <a name="License"></a>
