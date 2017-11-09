@@ -85,7 +85,7 @@ final class SchemaServer
      */
     private function parseUrlParams(): void
     {
-        $options = ['options' => ['default' => '/system/getConfiguration/unknown-schema.json']];
+        $options = ['options' => ['default' => '/system/getConfiguration/unknownSchema.json']];
         $pathInfo = \filter_input(\INPUT_SERVER, 'PATH_INFO', \FILTER_DEFAULT, $options);
         $pathInfo = explode('/', \trim($pathInfo, '/'));
 
