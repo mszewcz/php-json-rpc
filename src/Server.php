@@ -185,13 +185,50 @@ final class Server
     }
 
     /**
-     * Reads php://input and validates it
+     * Prepares response to request
+     */
+    private function prepareResponse(): void
+    {
+        try {
+            $responses = [];
+            $requests = $this->decodeRequest();
+
+            foreach ($requests as $request) {
+                $response = $this->processSingleRequest($request);
+
+                if ($response !== null) {
+                    $responses[] = $response;
+                }
+            }
+            if (\count($responses) === 0) {
+                return;
+            }
+            if (\count($responses) === 1 && !$this->isBatchRequest) {
+                $responses = \array_shift($responses);
+            }
+        } catch (\Exception $e) {
+            // always return this error as it's thrown when incorrect json received
+            $error = (new Error($e->getCode(), $e->getMessage()))->build();
+            $responses = (new Response(null, $error, null))->build();
+        }
+
+        try {
+            $this->response = $this->encode($responses);
+        } catch (ServerErrorException $e) {
+            $error = (new Error($e->getCode(), $e->getMessage(), $e->getData()))->build();
+            $response = (new Response(null, $error, null))->build();
+            $this->response = \json_encode($response);
+        }
+    }
+
+    /**
+     * Decodes client's request
      *
      * @throws  ParseErrorException
      * @throws  InvalidRequestException
      * @return  array
      */
-    private function getRequests(): array
+    private function decodeRequest(): array
     {
         try {
             $decoded = $this->utils->decode($this->request);
@@ -214,9 +251,9 @@ final class Server
      * @param   mixed $request Single request
      * @return  array|null
      */
-    private function processRequest($request): ?array
+    private function processSingleRequest($request): ?array
     {
-        $baseRequestSchema = [
+        $jsonRpcRequestSchema = [
             'type'       => 'object',
             'properties' => [
                 'jsonrpc' => ['const' => '2.0'],
@@ -228,11 +265,10 @@ final class Server
         ];
 
         try {
-            $validator = new Validator($baseRequestSchema);
+            $validator = new Validator($jsonRpcRequestSchema);
             if (!$validator->validate($request)) {
                 throw new InvalidRequestException();
             }
-            // validate request
         } catch (\Exception $e) {
             $requestID = isset($request['id']) ? $request['id'] : null;
             $error = (new Error($e->getCode(), $e->getMessage()))->build();
@@ -285,35 +321,22 @@ final class Server
      */
     public function listen(): Server
     {
-        try {
-            $responses = [];
-            $requests = $this->getRequests();
+        $options = ['options' => ['default' => $this->config->getDefaultRequestMethod()]];
+        $requestMethod = \filter_input(\INPUT_SERVER, 'REQUEST_METHOD', \FILTER_DEFAULT, $options);
 
-            foreach ($requests as $request) {
-                $response = $this->processRequest($request);
-
-                if ($response !== null) {
-                    $responses[] = $response;
-                }
-            }
-            if (\count($responses) === 0) {
-                return $this;
-            }
-            if (\count($responses) === 1 && !$this->isBatchRequest) {
-                $responses = \array_shift($responses);
-            }
-        } catch (\Exception $e) {
-            // always return this error as it's thrown when incorrect json received
-            $error = (new Error($e->getCode(), $e->getMessage()))->build();
-            $responses = (new Response(null, $error, null))->build();
-        }
-
-        try {
-            $this->response = $this->encode($responses);
-        } catch (ServerErrorException $e) {
-            $error = (new Error($e->getCode(), $e->getMessage(), $e->getData()))->build();
-            $response = (new Response(null, $error, null))->build();
-            $this->response = \json_encode($response);
+        switch ($requestMethod) {
+            case 'OPTIONS':
+                // @codeCoverageIgnoreStart
+                $headers = \getallheaders();
+                $headers = \array_merge(['Content-Type', 'Authorization'], \array_keys($headers));
+                $headers = \implode(',', \array_unique($headers));
+                $this->addHeaders(['name' => 'Access-Control-Allow-Headers', 'value' => $headers]);
+                break;
+                // @codeCoverageIgnoreEnd
+            case 'POST':
+                $this->prepareResponse();
+                break;
+            default:
         }
         return $this;
     }

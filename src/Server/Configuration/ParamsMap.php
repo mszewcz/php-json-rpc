@@ -23,9 +23,9 @@ class ParamsMap
     private $paramsMap = [];
 
     /**
-     * Schemas constructor.
+     * ParamsMap constructor.
      *
-     * @param array  $namespaceMap
+     * @param array $namespaceMap
      */
     public function __construct(array $namespaceMap)
     {
@@ -35,23 +35,25 @@ class ParamsMap
 
     /**
      * Builds params map
-     *
-     * @return void
      */
     private function buildParamsMap(): void
     {
         foreach ($this->namespaceMap as $nsName => $nsHandlerClassName) {
-            $reflectionClass = new \ReflectionClass($nsHandlerClassName);
-            $classMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PROTECTED);
+            try {
+                $reflectionClass = new \ReflectionClass($nsHandlerClassName);
+                $classMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PROTECTED);
 
-            foreach ($classMethods as $method) {
-                $methodName = $method->name;
-                $reflectionMethod = new \ReflectionMethod($nsHandlerClassName, $methodName);
-                $methodParams = $reflectionMethod->getParameters();
+                foreach ($classMethods as $method) {
+                    $methodName = $method->name;
+                    $reflectionMethod = new \ReflectionMethod($nsHandlerClassName, $methodName);
+                    $methodParams = $reflectionMethod->getParameters();
 
-                foreach ($methodParams as $param) {
-                    $this->paramsMap[$nsName][$methodName][] = $param->name;
+                    foreach ($methodParams as $param) {
+                        $this->paramsMap[$nsName][$methodName][] = $param->name;
+                    }
                 }
+            } catch (\ReflectionException $exception) {
+                die($exception->getMessage());
             }
         }
     }

@@ -86,6 +86,7 @@ class ServerTest extends TestCase
     public function setUp()
     {
         $this->config = new Configuration($this->nsMap);
+        $this->config->setDefaultRequestMethod('POST');
         $this->server = (new Server($this->config));
     }
 
