@@ -17,7 +17,7 @@
         "mszewcz/php-json-schema-validator": ">=1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.3",
+        "phpunit/phpunit": "^7",
         "codacy/coverage": "dev-master"
     },
     "autoload": {

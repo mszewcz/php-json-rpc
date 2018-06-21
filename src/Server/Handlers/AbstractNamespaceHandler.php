@@ -100,13 +100,13 @@ abstract class AbstractNamespaceHandler
         }
 
         $inputParams = $this->config->getInputParams($this->nsName, $methodName);
-        $outputParams = [];
+        $sortedParams = [];
 
         foreach ($inputParams as $inputParam) {
-            $outputParams[] = $params[$inputParam];
+            $sortedParams[] = $params[$inputParam];
         }
 
-        return $outputParams;
+        return $sortedParams;
     }
 
     /**
@@ -121,7 +121,7 @@ abstract class AbstractNamespaceHandler
      */
     final public function invoke(string $methodName = '', array $request = [])
     {
-        if (\method_exists($this, $methodName)) {
+        if (\in_array($methodName, \get_class_methods($this))) {
             if ($this->paramsValidator->validate($this->nsName, $methodName, $request)) {
                 $params = isset($request['params']) ? (array)$request['params'] : [];
 

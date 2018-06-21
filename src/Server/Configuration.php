@@ -25,6 +25,12 @@ class Configuration
      */
     private $serverUrl = '';
     /**
+     * Default request method
+     *
+     * @var string
+     */
+    private $defaultRequestMethod = 'GET';
+    /**
      * Namespace map
      *
      * @var array
@@ -46,9 +52,9 @@ class Configuration
     private $currentNamespace = '';
 
     /**
-     * Configuration constructor
+     * Configuration constructor.
      *
-     * @param   array $namespaceMap Namespace map
+     * @param array $namespaceMap
      */
     public function __construct(array $namespaceMap)
     {
@@ -65,7 +71,7 @@ class Configuration
     private function setServerUrl(): void
     {
         $options = ['options' => ['default' => false]];
-        $protocol = \filter_input(\INPUT_SERVER, 'HTTPS', \FILTER_DEFAULT, $options) === true ? 'https' : 'http';
+        $protocol = \filter_input(\INPUT_SERVER, 'HTTPS', \FILTER_VALIDATE_BOOLEAN, $options) === true ? 'https' : 'http';
         $options = ['options' => ['default' => '']];
         $serverName = \filter_input(\INPUT_SERVER, 'SERVER_NAME', \FILTER_DEFAULT, $options);
         $scriptName = \filter_input(\INPUT_SERVER, 'SCRIPT_NAME', \FILTER_DEFAULT, $options);
@@ -89,10 +95,22 @@ class Configuration
     }
 
     /**
+     * Sets default request method (for testing purposes only)
+     *
+     * @param string $method
+     */
+    public function setDefaultRequestMethod($method = 'GET'): void
+    {
+        if (in_array($method, ['GET', 'POST'])) {
+            $this->defaultRequestMethod = $method;
+        }
+    }
+
+    /**
      * Builds server configuration array based on namespace map
      *
-     * @param   array $namespaceMap Namespace map
-     * @return  Configuration
+     * @param array $namespaceMap
+     * @return Configuration
      */
     public function setNamespaceMap(array $namespaceMap): Configuration
     {
@@ -100,6 +118,16 @@ class Configuration
         $this->schemaMap = new SchemaMap($namespaceMap, $this->serverUrl);
         $this->paramsMap = new ParamsMap($namespaceMap);
         return $this;
+    }
+
+    /**
+     * Returns default request method (for testing purposes only)
+     *
+     * @return string
+     */
+    public function getDefaultRequestMethod(): string
+    {
+        return $this->defaultRequestMethod;
     }
 
     /**
